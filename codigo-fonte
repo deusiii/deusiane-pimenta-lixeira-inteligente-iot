@@ -4,16 +4,16 @@
 // ========================
 // WIFI
 // ========================
-const char* ssid = "iPhone";
-const char* password = "123456789";
+const char* ssid = "SEU_WIFI";
+const char* password = "SUA_SENHA";
 
 WiFiClient client;
 
 // ========================
 // THINGSPEAK
 // ========================
-unsigned long channelID = 3399565;
-const char* writeAPIKey = "9UB4IBCU3P4Z3LOZ";
+unsigned long channelID = SEU_CANAL;
+const char* writeAPIKey = "SUA_CHAVE";
 
 // ========================
 // HC-SR04
