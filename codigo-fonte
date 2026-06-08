@@ -1,0 +1,164 @@
+#include <WiFi.h>
+#include <ThingSpeak.h>
+
+// ========================
+// WIFI
+// ========================
+const char* ssid = "iPhone";
+const char* password = "123456789";
+
+WiFiClient client;
+
+// ========================
+// THINGSPEAK
+// ========================
+unsigned long channelID = 3399565;
+const char* writeAPIKey = "9UB4IBCU3P4Z3LOZ";
+
+// ========================
+// HC-SR04
+// ========================
+#define TRIG 5
+#define ECHO 18
+
+// ========================
+// LED RGB
+// ========================
+#define RED_PIN   25
+#define GREEN_PIN 26
+#define BLUE_PIN  27
+
+// Altura da lixeira (cm)
+const float ALTURA_LIXEIRA = 30.0;
+
+// ========================
+// FUNÇÃO LED RGB
+// ========================
+void setColor(bool red, bool green, bool blue) {
+  digitalWrite(RED_PIN, red);
+  digitalWrite(GREEN_PIN, green);
+  digitalWrite(BLUE_PIN, blue);
+}
+
+void setup() {
+
+  Serial.begin(115200);
+
+  // Sensor Ultrassônico
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECHO, INPUT);
+
+  // LED RGB
+  pinMode(RED_PIN, OUTPUT);
+  pinMode(GREEN_PIN, OUTPUT);
+  pinMode(BLUE_PIN, OUTPUT);
+
+  // Apaga LED inicialmente
+  setColor(LOW, LOW, LOW);
+
+  // Conecta ao Wi-Fi
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Conectando WiFi...");
+  }
+
+  Serial.println("WiFi conectado!");
+
+  ThingSpeak.begin(client);
+}
+
+void loop() {
+
+  long duracao;
+  float distancia;
+  float nivel;
+
+  // ========================
+  // LEITURA HC-SR04
+  // ========================
+
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(TRIG, LOW);
+
+  duracao = pulseIn(ECHO, HIGH);
+
+  distancia = duracao * 0.034 / 2.0;
+
+  // ========================
+  // CÁLCULO DO NÍVEL
+  // ========================
+
+  nivel =
+    ((ALTURA_LIXEIRA - distancia)
+    / ALTURA_LIXEIRA) * 100.0;
+
+  if (nivel < 0) nivel = 0;
+  if (nivel > 100) nivel = 100;
+
+  // ========================
+  // CONTROLE DO LED RGB
+  // ========================
+
+  if (nivel < 50) {
+
+    // VERDE = VAZIA
+    setColor(LOW, HIGH, LOW);
+
+  } else if (nivel < 80) {
+
+    // AZUL = METADE
+    setColor(LOW, LOW, HIGH);
+
+  } else {
+
+    // VERMELHO = CHEIA
+    setColor(HIGH, LOW, LOW);
+
+  }
+
+  // ========================
+  // MONITOR SERIAL
+  // ========================
+
+  Serial.println("========================");
+  Serial.print("Distancia: ");
+  Serial.print(distancia);
+  Serial.println(" cm");
+
+  Serial.print("Nivel da Lixeira: ");
+  Serial.print(nivel);
+  Serial.println(" %");
+
+  // ========================
+  // ENVIO THINGSPEAK
+  // ========================
+
+  ThingSpeak.setField(1, nivel);
+
+  int resposta =
+    ThingSpeak.writeFields(
+      channelID,
+      writeAPIKey
+    );
+
+  if (resposta == 200) {
+
+    Serial.println("Dados enviados ao ThingSpeak!");
+
+  } else {
+
+    Serial.print("Erro ThingSpeak: ");
+    Serial.println(resposta);
+
+  }
+
+  // ThingSpeak exige intervalo mínimo de 15 s
+  delay(20000);
+}
