@@ -121,8 +121,7 @@ O diagrama elétrico e as fotos da montagem serão adicionados em futuras atuali
 deusiane-pimenta-lixeira-inteligente-iot/
 │
 ├── README.md
-├── codigo-fonte/
-│   └── lixeira_inteligente.ino
+├── codigo-fonte
 │
 └── imagens/
     └── circuito-em-desenvolvimento.png
