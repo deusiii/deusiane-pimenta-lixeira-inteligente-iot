@@ -68,8 +68,23 @@ A escolha do HTTP foi motivada pelos seguintes fatores:
 * Jumpers
 * Protoboard
 * Cabo USB para programação
+### 2. Conexões sensores e ESP32
+| Sensor HC-SR04   | ESP32                          |
+| ---------------- | ------------------------------ |
+| VCC              | 5V (Vin)                       |
+| GND              | GND                            |
+| TRIG             | GPIO 5                         |
+| ECHO             | GPIO 18                        |
 
-### 2. Instalar Dependências
+| LED RGB (CÁTODO) | ESP32                          |
+| ---------------- | ------------------------------ |
+| R                | GPIO 25                        |
+| G                | GPIO 26                        |
+| B                | GPIO 27                        |
+| Comum (-)        | GND                            |
+
+
+### 3. Instalar Dependências
 
 Na Arduino IDE, instalar as bibliotecas:
 
@@ -78,7 +93,7 @@ Na Arduino IDE, instalar as bibliotecas:
 
 Também é necessário configurar o suporte à placa ESP32 na Arduino IDE.
 
-### 3. Configurar Wi-Fi
+### 4. Configurar Wi-Fi
 
 No código, alterar as seguintes variáveis:
 
@@ -87,7 +102,7 @@ const char* ssid = "SEU_WIFI";
 const char* password = "SUA_SENHA";
 ```
 
-### 4. Configurar ThingSpeak
+### 5. Configurar ThingSpeak
 
 Substituir pelos dados do seu canal:
 
@@ -96,7 +111,7 @@ unsigned long channelID = SEU_CHANNEL_ID;
 const char* writeAPIKey = "SUA_API_KEY";
 ```
 
-### 5. Enviar o Código
+### 6. Enviar o Código
 
 * Conectar o ESP32 ao computador.
 * Selecionar a porta correta na Arduino IDE.
@@ -114,20 +129,6 @@ const char* writeAPIKey = "SUA_API_KEY";
 ## Diagrama ou Foto do Circuito
 
 O diagrama elétrico e as fotos da montagem serão adicionados em futuras atualizações do projeto.
-
-## 📂 Estrutura do Projeto
-
-```text
-deusiane-pimenta-lixeira-inteligente-iot/
-│
-├── README.md
-├── codigo-fonte
-│
-└── imagens/
-    └── circuito-em-desenvolvimento.png
-```
-
----
 
 ## 👩‍💻 Autora
 
